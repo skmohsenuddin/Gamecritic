@@ -1,0 +1,507 @@
+/* GameCritic Dark Theme - IGN Style */
+
+:root {
+    --primary-color: #e31837;
+    --secondary-color: #1a1a1a;
+    --dark-bg: #0f0f0f;
+    --card-bg: #1e1e1e;
+    --text-light: #ffffff;
+    --text-muted: #b0b0b0;
+    --border-color: #333333;
+}
+
+body {
+    background-color: var(--dark-bg);
+    color: var(--text-light);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Text Color Utilities */
+.text-white {
+    color: var(--text-light) !important;
+}
+
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+/* Ensure all text is visible */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-light) !important;
+}
+
+p, span, div, label {
+    color: var(--text-light) !important;
+}
+
+/* Form labels */
+.form-label {
+    color: var(--text-light) !important;
+    font-weight: 500;
+}
+
+/* Card text */
+.card-text {
+    color: var(--text-muted) !important;
+}
+
+/* Small text */
+small {
+    color: var(--text-muted) !important;
+}
+
+/* Alert text */
+.alert {
+    color: var(--text-light) !important;
+}
+
+.alert-danger {
+    background-color: rgba(220, 53, 69, 0.1) !important;
+    border-color: #dc3545 !important;
+    color: var(--text-light) !important;
+}
+
+.alert-success {
+    background-color: rgba(25, 135, 84, 0.1) !important;
+    border-color: #198754 !important;
+    color: var(--text-light) !important;
+}
+
+.alert-info {
+    background-color: rgba(13, 202, 240, 0.1) !important;
+    border-color: #0dcaf0 !important;
+    color: var(--text-light) !important;
+}
+
+.alert-warning {
+    background-color: rgba(255, 193, 7, 0.1) !important;
+    border-color: #ffc107 !important;
+    color: var(--text-light) !important;
+}
+
+/* Card headers */
+.card-header {
+    background-color: var(--secondary-color) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    color: var(--text-light) !important;
+}
+
+.card-header h3, .card-header h4, .card-header h5 {
+    color: var(--text-light) !important;
+}
+
+/* Links */
+a {
+    color: var(--primary-color) !important;
+}
+
+a:hover {
+    color: #c41230 !important;
+}
+
+/* Strong text */
+strong {
+    color: var(--text-light) !important;
+}
+
+/* Badge text */
+.badge {
+    color: var(--text-light) !important;
+}
+
+/* Button text */
+.btn {
+    color: var(--text-light) !important;
+}
+
+.btn-outline-primary {
+    color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color) !important;
+    color: var(--text-light) !important;
+}
+
+.btn-outline-danger {
+    color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+}
+
+.btn-outline-danger:hover {
+    background-color: var(--primary-color) !important;
+    color: var(--text-light) !important;
+}
+
+/* Navbar Styling */
+.navbar-dark {
+    background-color: var(--secondary-color) !important;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.navbar-brand {
+    color: var(--primary-color) !important;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.nav-link {
+    color: var(--text-light) !important;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: var(--primary-color) !important;
+}
+
+/* Carousel Styling */
+.carousel {
+    margin-top: 2rem;
+    margin-bottom: 3rem;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.carousel-img {
+    height: 400px;
+    object-fit: cover;
+}
+
+.carousel-caption {
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 2rem 1rem 1rem;
+}
+
+.carousel-caption h5 {
+    color: var(--primary-color);
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+/* Card Styling */
+.card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(227, 24, 55, 0.2);
+}
+
+.card-img-top {
+    height: 160px;
+    object-fit: cover;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+/* Compact game card visuals */
+.game-card .card-body {
+    padding: 1rem;
+}
+
+.game-card .card-title {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.game-card .card-text {
+    font-size: 0.9rem;
+}
+
+.game-card .meta {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.card-title {
+    color: var(--text-light);
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.card-text {
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+/* Section Headers */
+h2 {
+    color: var(--primary-color);
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 0.5rem;
+}
+
+/* Alert Styling */
+.alert-info {
+    background-color: rgba(227, 24, 55, 0.1);
+    border: 1px solid var(--primary-color);
+    color: var(--text-light);
+}
+
+.alert-warning {
+    background-color: rgba(255, 193, 7, 0.1);
+    border: 1px solid #ffc107;
+    color: var(--text-light);
+}
+
+/* Button Styling */
+.btn-danger {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-danger:hover {
+    background-color: #e5314f;
+    border-color: #e63a56;
+}
+
+.btn-outline-light {
+    border-color: var(--text-light);
+    color: var(--text-light);
+}
+
+.btn-outline-light:hover {
+    background-color: var(--text-light);
+    color: var(--dark-bg);
+}
+
+/* Form Styling */
+.form-control {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-light);
+}
+
+.form-control:focus {
+    background-color: var(--card-bg);
+    border-color: var(--primary-color);
+    color: var(--text-light);
+    box-shadow: 0 0 0 0.2rem rgba(227, 24, 55, 0.25);
+}
+
+.form-control::placeholder {
+    color: var(--text-muted);
+}
+
+/* Login/Signup Pages */
+.login-page {
+    background: linear-gradient(135deg, var(--dark-bg) 0%, var(--secondary-color) 100%);
+    min-height: 100vh;
+}
+
+.login-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+}
+
+/* Footer */
+footer {
+    background-color: var(--secondary-color) !important;
+    border-top: 2px solid var(--primary-color);
+    margin-top: 4rem;
+}
+
+.list-group-item {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-light);
+}
+
+.list-group-item:hover {
+    background-color: var(--primary-color);
+    color: var(--text-light);
+}
+
+.list-group-item-action {
+    color: var(--text-light);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .carousel-img {
+        height: 250px;
+    }
+    
+    .carousel-caption {
+        padding: 1rem 0.5rem 0.5rem;
+    }
+    
+    .carousel-caption h5 {
+        font-size: 1.1rem;
+    }
+    
+    .carousel-caption p {
+        font-size: 0.9rem;
+    }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--dark-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #c41230;
+}
+
+#reviewTextarea {
+    resize: none;
+}
+
+.nav-tabs .nav-link {
+    color: #f8f9fa;            
+}
+
+.nav-tabs .nav-link.active {
+    color: #dc3545;             
+    background-color: #343a40;  
+    border-color: #343a40 #343a40 #1e1e1e; 
+}
+
+.alert-danger {
+    background-color: rgba(220, 53, 69, 0.1) !important;
+    border-color: #dc3545 !important;
+    color: var(--text-light) !important;
+}
+
+.feature-card {
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.feature-card .card-img-top {
+    height: 260px;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+}
+
+.rating-title-bar:first-of-type {
+  margin-top: 30px;
+}
+
+.rating-title-bar {
+  font-size: 1.4rem; 
+  font-weight: 700;
+  color: #a4baea;
+
+  width: 60%;  
+  margin: 0 auto; 
+  background-color: #2b2b2b;    
+  border: 2px solid #facc15;    
+  border-radius: 6px;             
+
+  padding: 14px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;  
+}
+
+.rating-stars {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: center;
+  gap: 10px;
+}
+
+.rating-stars input {
+  display: none;
+}
+
+.rating-stars label {
+  font-size: 1.6rem;
+  color: #6b7280;
+  cursor: pointer;
+  transition: color 0.2s, transform 0.2s;
+}
+
+.rating-stars label:hover,
+.rating-stars label:hover ~ label {
+    color: #facc15 !important;
+    transform: scale(1.4);
+}
+
+.rating-stars input:checked ~ label {
+    color: #fbbf24 !important; 
+}
+
+#rating-warning {
+    font-size: 1.2rem;           /* bigger text */
+    padding: 10px 20px;          /* vertical & horizontal padding */
+    margin: 30px auto 10px auto;           /* top/bottom space + horizontal center */
+    max-width: 500px;            /* optional: limit width */
+    text-align: center;           /* center text inside */
+    border: 2px solid #ff9800;   /* optional border */
+    border-radius: 8px;           /* rounded corners */
+    background-color: #ffc107;    /* warning yellow */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* subtle shadow */
+}
+
+#rating-warning.show {
+    display: block;
+    animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.center-btn {
+    display: block;
+    margin: 40px auto 0;
+    padding: 10px 28px;  
+    font-size: 1.4rem; 
+    min-width: 170px;  
+}
+
+.rating-item {
+    display: flex;
+    justify-content: space-between; /* text left, stars right */
+    align-items: center;           /* vertical center */
+    font-size: 1.2rem;
+}
+
+.rating-label {
+    font-weight: 500;
+}
+
+.rating-stars-display {
+    font-size: 1.5rem;
+    letter-spacing: 3px;
+    color: #fbbf24 !important; 
+}
+
+.rating-stars-display .empty {
+    color: #fff;           /* white or light gray for empty stars */
+    text-shadow: 0 0 0 #ffc107, 0 0 1px #ffc107 !important;
+}
