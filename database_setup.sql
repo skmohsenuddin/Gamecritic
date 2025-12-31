@@ -109,3 +109,25 @@ ADD CONSTRAINT chk_technical CHECK (technical BETWEEN 1 AND 5),
 ADD CONSTRAINT chk_value CHECK (value BETWEEN 1 AND 5);
 
 ALTER TABLE ratings ADD UNIQUE (game_id, user_id);
+
+CREATE TABLE review_votes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    review_id INT NOT NULL,
+    user_id INT NOT NULL,
+    vote TINYINT NOT NULL, -- 1 = upvote, -1 = downvote
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE KEY unique_vote (review_id, user_id),
+
+    FOREIGN KEY (review_id) REFERENCES reviews(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE review_votes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    review_id INT NOT NULL,
+    user_id INT NOT NULL,
+    vote_type ENUM('up','down') NOT NULL,
+    UNIQUE KEY unique_vote (review_id, user_id),
+    FOREIGN KEY (review_id) REFERENCES reviews(id) ON DELETE CASCADE
+);

@@ -45,6 +45,18 @@ $title = htmlspecialchars($game['title']) . ' | GameCritic';
             <!-- Write Review -->
             <div class="mb-4">
                 <h5 class = "mt-3">Write a Review</h5>
+                <?php if (!empty($_SESSION['error'])): ?>
+                    <div class="alert alert-warning">
+                        <?= htmlspecialchars($_SESSION['error']) ?>
+                    </div>
+                    <?php unset($_SESSION['error']); ?>
+                <?php endif; ?>
+                <div id="review-warning" class="alert alert-warning d-none">
+                    Review cannot be empty
+                </div>
+<div id="spam-warning" class="alert alert-warning d-none">
+    <strong>Warning: Spam detected! You cannot submit this review.</strong>
+</div>
                 <form id="reviewForm" method="POST" action="<?= rtrim($baseUrl,'/') ?>/game/<?= (int)$game['id'] ?>/review">
                     <div class="mb-3">
                         <textarea
@@ -97,25 +109,75 @@ $title = htmlspecialchars($game['title']) . ' | GameCritic';
 
                 <script>
                 document.addEventListener('DOMContentLoaded', () => {
+
                     const form = document.getElementById('reviewForm');
+                    const textarea = document.getElementById('reviewTextarea');
+
+                    const reviewWarning = document.getElementById('review-warning');
+                    const spamWarning = document.getElementById('spam-warning');
+
                     const overlay = document.getElementById('guidelinesOverlay');
                     const agreeBtn = document.getElementById('agreeGuidelines');
                     const cancelBtn = document.getElementById('cancelGuidelines');
-                    let confirmed = false;
-                    form.addEventListener('submit', function(e) {
-                        if (!confirmed) {
-                            e.preventDefault();             
-                            overlay.style.display = 'flex'; 
+
+                    async function checkSpam(text) {
+                        if (!text) return false;
+
+                        try {
+                            const res = await fetch('http://localhost:5000/predict', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ text: text })
+                            });
+
+                            if (!res.ok) {
+                                console.error('Spam API returned error', res.status);
+                                return true; 
+                            }
+
+                            const data = await res.json();
+
+                            return !!data.spam;
+
+                        } catch (err) {
+                            console.error('Spam check failed', err);
+                            return true;
                         }
+                    }
+
+                    form.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        const review = textarea.value.trim();
+
+                        if (!review) {
+                            reviewWarning.classList.remove('d-none');
+                            textarea.focus();
+                            return;
+                        }
+
+                        reviewWarning.classList.add('d-none');
+                        overlay.style.display = 'flex';
                     });
-                    agreeBtn.addEventListener('click', () => {
-                        confirmed = true;
+
+                    agreeBtn.addEventListener('click', async () => {
                         overlay.style.display = 'none';
+                        const reviewText = textarea.value.trim();
+
+                        const isSpam = await checkSpam(reviewText);
+
+                        if (isSpam) {
+                            spamWarning.classList.remove('d-none');
+                            textarea.focus();
+                            return;
+                        }
+
                         form.submit();
                     });
-                    cancelBtn.addEventListener('click', () => {
-                        overlay.style.display = 'none';
-                    });
+
+                    cancelBtn.addEventListener('click', () => overlay.style.display = 'none');
+
+                    textarea.addEventListener('input', () => spamWarning.classList.add('d-none'));
+
                 });
                 </script>
 
@@ -128,12 +190,10 @@ $title = htmlspecialchars($game['title']) . ' | GameCritic';
 
                         const loginUrl = '<?= rtrim($baseUrl,'/') ?>/login?redirected=1&reason=' + encodeURIComponent('comment');
 
-                        // Redirect to login when textarea is focused
                         textarea.addEventListener('focus', function() {
                             window.location.href = loginUrl;
                         });
 
-                        // Prevent form submission and redirect
                         form.addEventListener('submit', function(e) {
                             window.location.href = loginUrl;
                         });
@@ -145,14 +205,52 @@ $title = htmlspecialchars($game['title']) . ' | GameCritic';
                 <?php if (empty($reviews)): ?>
                     <p class="text-muted">No reviews yet.</p>
                 <?php else: ?>
-                    <?php foreach ($reviews as $rev): ?>
-                        <div class="border rounded p-3 mb-3">
-                            <strong><?= htmlspecialchars($rev['username'] ?? 'User') ?></strong>
-                            <small class="text-muted ms-2"><?= htmlspecialchars($rev['created_at']) ?></small>
-                            <p class="mt-2 mb-0">
-                                <?= nl2br(htmlspecialchars($rev['comment'])) ?>
-                            </p>
-                        </div>
+                <?php foreach ($reviews as $rev): ?>
+                    <div class="border rounded p-3 mb-3">
+                    <strong><?= htmlspecialchars($rev['username'] ?? 'User') ?></strong>
+                    <small class="text-muted ms-2"><?= htmlspecialchars($rev['created_at']) ?></small>
+                    <p class="mt-1 mb-4">
+                        <?= nl2br(htmlspecialchars($rev['comment'])) ?>
+                    </p>
+                    <form method="POST" action="<?= $baseUrl ?>/review/vote" class="d-inline">
+                        <input type="hidden" name="review_id" value="<?= $rev['id'] ?>">
+                        <input type="hidden" name="vote" value="1">
+                        <button class="vote-btn icon-btn <?= ($rev['user_vote'] ?? null) === 'up' ? 'voted' : '' ?>">
+                            <i class="bi bi-hand-thumbs-up"></i>
+                        </button>
+                    </form>
+                    <span class="vote-count"><?= $rev['upvotes'] ?? 0 ?></span>
+                    <form method="POST" action="<?= $baseUrl ?>/review/vote" class="d-inline">
+                        <input type="hidden" name="review_id" value="<?= $rev['id'] ?>">
+                        <input type="hidden" name="vote" value="-1">
+                        <button class="vote-btn icon-btn <?= ($rev['user_vote'] ?? null) === 'down' ? 'voted' : '' ?>">
+                            <i class="bi bi-hand-thumbs-down"></i>
+                        </button>
+                    </form>
+                    <span class="vote-count"><?= $rev['downvotes'] ?? 0 ?></span>
+                    </div>
+
+                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                    <script>
+                    $('.review-votes form').submit(function(e) {
+                        e.preventDefault(); // stop normal form submission
+
+                        let $form = $(this);
+                        let reviewId = $form.find('input[name="review_id"]').val();
+                        let vote     = $form.find('input[name="vote"]').val();
+
+                        $.post($form.attr('action'), { review_id: reviewId, vote: vote }, function(response) {
+                            if (response.success) {
+                                location.reload();
+                            } else if (response.redirect) {
+                                window.location.href = response.redirect;
+                            } else {
+                                alert(response.message);
+                            }
+                        }, 'json');
+                    });
+                    </script>
+
                     <?php endforeach; ?>
                 <?php endif; ?>
                 </div>
@@ -254,12 +352,20 @@ $title = htmlspecialchars($game['title']) . ' | GameCritic';
                     rateBtn.addEventListener('click', function (e) {
                         const hasRated = rateBtn.dataset.rated === '1';
                         if (hasRated) {
-                            e.preventDefault(); // stop link
+                            e.preventDefault(); 
                             warningDiv.style.display = 'block';
                         } else {
                             window.location.href = rateBtn.dataset.rateUrl;
                         }
                     });
+                });
+                </script>
+                <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    if (window.location.hash === '#ratings') {
+                        const tabBtn = document.querySelector('[data-bs-target="#ratings"]');
+                        if (tabBtn) new bootstrap.Tab(tabBtn).show();
+                    }
                 });
                 </script>
                 </div>

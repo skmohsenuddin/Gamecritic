@@ -2,19 +2,23 @@
 require_once __DIR__ . '/BaseController.php';
 require_once __DIR__ . '/../models/GameModel.php';
 require_once __DIR__ . '/../models/ReviewModel.php';
+require_once __DIR__ . '/../models/ReviewVoteModel.php';
 require_once __DIR__ . '/../models/RatingModel.php';
 
 class GameController extends BaseController {
     private $baseUrl;
     private $gameModel;
     private $reviewModel;
+    private $reviewVoteModel;
     protected $ratingModel;
+
 
     public function __construct() {
         $this->baseUrl = $this->baseUrl();
         $this->gameModel = new GameModel();
         $this->reviewModel = new ReviewModel();
         $this->ratingModel = new RatingModel();
+        $this->reviewVoteModel = new ReviewVoteModel();
     }
 
     public function show($id) {
@@ -24,7 +28,6 @@ class GameController extends BaseController {
             return 'Game not found';
         }
 
-        // Normalize cover image path
         $cover = $game['cover_image'] ?? '';
         if ($cover !== '') {
             if (strpos($cover, '/images/') === 0) {
@@ -37,8 +40,6 @@ class GameController extends BaseController {
         } else {
             $game['cover_resolved'] = $this->baseUrl() . '/images/default.jpg';
         }
-
-        $reviews = $this->reviewModel->getCommentsForGameSorted((int)$id);
 
         $ratings = $this->ratingModel->getGameRatings((int)$id);
 
@@ -58,6 +59,9 @@ class GameController extends BaseController {
                 $userRatingAvg = array_sum($userRating) / count($userRating);
             }
         }
+
+        $reviews = $this->reviewModel->getCommentsForGameSorted((int)$id, $userId);
+        
         $hasRated = false;
         if ($userId) {
             $hasRated = $this->ratingModel->hasUserRatedGame($userId, $id);
@@ -89,8 +93,9 @@ class GameController extends BaseController {
 
         $review = trim($_POST['review'] ?? '');
         if ($review === '') {
-            http_response_code(400);
-            return 'Review cannot be empty';
+            $_SESSION['error'] = 'Review cannot be empty';
+            $this->redirect($this->baseUrl . '/game/' . (int)$id);
+            exit;
         }
 
         $userId = (int)$_SESSION['user_id'];
@@ -105,6 +110,35 @@ class GameController extends BaseController {
 
         http_response_code(500);
         return 'Unable to save review';
+    }
+
+    public function vote() {
+        $this->ensureSessionStarted();
+
+        if (!$this->isLoggedIn()) {
+            $back = urlencode($_SERVER['HTTP_REFERER'] ?? $this->baseUrl);
+            $this->redirect($this->baseUrl . '/login?redirected=1&reason=vote&back=' . $back);
+            exit;
+        }
+
+        if (!isset($_POST['review_id'], $_POST['vote'])) {
+            $this->redirect($_SERVER['HTTP_REFERER'] ?? $this->baseUrl);
+            exit;
+        }
+
+        $reviewId = (int) $_POST['review_id'];
+        $vote     = (int) $_POST['vote'];
+        $userId   = $_SESSION['user_id'];
+        $voteType = $vote === 1 ? 'up' : 'down';
+
+        try {
+            $this->reviewVoteModel->vote($reviewId, $userId, $voteType);
+        } catch (Exception $e) {
+            $_SESSION['flash_error'] = $e->getMessage();
+        }
+
+        $this->redirect($_SERVER['HTTP_REFERER'] ?? $this->baseUrl);
+        exit;
     }
 
     public function rate($id) {
@@ -151,7 +185,7 @@ class GameController extends BaseController {
         foreach ($ratings as $key => $value) {
             if ($value === null) {
                 $_SESSION['rating_error'] = "Please select a rating for all categories.";
-                $_SESSION['rating_values'] = $_POST; // keep selected values
+                $_SESSION['rating_values'] = $_POST; 
                 header("Location: " . $_SERVER['HTTP_REFERER']);
                 exit;
             }

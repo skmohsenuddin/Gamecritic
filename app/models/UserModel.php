@@ -59,7 +59,7 @@ class UserModel extends BaseModel {
         $query = "INSERT INTO {$this->table} (username, email, phone, password) VALUES (?, ?, ?, ?)";
         $stmt = $this->db->prepare($query);
         // Store as plain to match existing data convention if requested; otherwise hash.
-        $storeHashed = false;
+        $storeHashed = true;
         $passwordToStore = $storeHashed ? password_hash($data['password'], PASSWORD_DEFAULT) : (string)$data['password'];
         $username = $data['name'] ?? $data['username'] ?? '';
         $phone = $data['phone'] ?? '';

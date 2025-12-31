@@ -116,31 +116,6 @@
     </button>
 </form>
 
-<!-- 
-<script>
-    const warning = document.querySelector('.alert-warning');
-    if (warning) {
-        warning.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-</script> -->
-
-<!-- <script>
-document.getElementById('ratingForm').addEventListener('submit', function (e) {
-    const groups = ['fun', 'graphics', 'audio', 'story', 'ux_ui', 'technical'];
-    let missing = false;
-
-    groups.forEach(name => {
-        if (!document.querySelector(`input[name="${name}"]:checked`)) {
-            missing = true;
-        }
-    });
-
-    if (missing) {
-        e.preventDefault(); // STOP form submit
-        document.getElementById('rating-warning').style.display = 'block';
-    }
-});
-</script> -->
 <script>
 document.getElementById('ratingForm').addEventListener('submit', function (e) {
     const groups = ['fun', 'graphics', 'audio', 'story', 'ux_ui', 'technical'];
@@ -153,11 +128,11 @@ document.getElementById('ratingForm').addEventListener('submit', function (e) {
     });
 
     if (missing) {
-        e.preventDefault(); // stop form submission
+        e.preventDefault();
 
         const warning = document.getElementById('rating-warning');
-        warning.style.display = 'block';   // make it visible
-        warning.classList.add('show');     // trigger animation
+        warning.style.display = 'block';
+        warning.classList.add('show'); 
 
         warning.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }

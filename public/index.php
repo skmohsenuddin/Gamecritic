@@ -20,14 +20,11 @@ $router = new Router();
 $router->get('/', 'Home', 'index');
 $router->get('/filter', 'Home', 'filter');
 $router->get('/ping', 'Home', 'ping');
-// $router->get('/game/{id}', 'Game', 'show');
-// $router->get('/game/{id}/rate', 'Game', 'rate');
-// $router->post('/game/{id}/submitRate', 'Game', 'submitRate');
-// $router->get('/game/{id}', 'Game', 'show');
 $router->post('/game/{id}/submitRate', 'Game', 'submitRate');
 $router->get('/game/{id}/rate', 'Game', 'rate');
 $router->get('/game/{id}', 'Game', 'show');
 $router->post('/game/{id}/review', 'Game', 'review');
+$router->post('/review/vote', 'Game', 'vote');
 $router->get('/debug', 'Home', 'ping');
 
 // Auth routes

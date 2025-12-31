@@ -81,6 +81,9 @@ small {
     background-color: rgba(255, 193, 7, 0.1) !important;
     border-color: #ffc107 !important;
     color: var(--text-light) !important;
+    text-align: center !important; 
+    margin: 10px auto; 
+    padding: 0.5rem 0.5rem;
 }
 
 /* Card headers */
@@ -505,3 +508,24 @@ footer {
     color: #fff;           /* white or light gray for empty stars */
     text-shadow: 0 0 0 #ffc107, 0 0 1px #ffc107 !important;
 }
+
+.vote-btn,
+.icon-btn {
+    margin-left: -6px; 
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: #6c757d !important;
+}
+
+/* hover */
+.vote-btn.icon-btn:hover {
+    color: #0d6efd !important;
+}
+
+/* voted */
+.vote-btn.icon-btn.voted {
+    color: #48d17d !important;
+}
+
