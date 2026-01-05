@@ -1,0 +1,18 @@
+# Python
+venv/
+__pycache__/
+*.py[cod]
+instance/
+.pytest_cache/
+.vscode/
+
+# Database
+*.sqlite
+*.sql.gz
+
+# Environment
+.env
+
+# PHP / OS
+.DS_Store
+Thumbs.db

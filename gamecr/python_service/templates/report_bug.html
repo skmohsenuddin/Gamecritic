@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="glass-card" style="max-width: 600px; margin: 0 auto;">
+    <h2 style="text-align: center;"><i class="fas fa-bug"></i> Report a Bug</h2>
+    <p style="text-align: center; color: #888; margin-bottom: 2rem;">Help us improve GameCritic by reporting any issues
+        you find.</p>
+
+    <form action="" method="post">
+        <div style="margin-bottom: 1.5rem;">
+            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Bug Type</label>
+            <select name="bug_type" class="form-control" required>
+                <option value="" disabled selected>Select bug category</option>
+                <option value="UI/Design">UI/Design Issue</option>
+                <option value="Functionality">Functional Bug</option>
+                <option value="Database">Database Error</option>
+                <option value="Suggestion AI">AI Suggestion Error</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Your Name</label>
+            <input type="text" name="name" class="form-control" placeholder="Enter your name" required>
+        </div>
+
+        <div style="margin-bottom: 2rem;">
+            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">How to Fix / Details</label>
+            <textarea name="fix_details" class="form-control" rows="5"
+                placeholder="Describe the bug and how you think it should be fixed..." required
+                style="resize: vertical;"></textarea>
+        </div>
+
+        <button type="submit" class="btn" style="width: 100%;">Submit Report</button>
+    </form>
+
+    <div style="text-align: center; margin-top: 2rem;">
+        <a href="{{ url_for('view_bugs') }}"
+            style="color: var(--primary-color); text-decoration: none; font-size: 0.9rem;">
+            <i class="fas fa-list-alt me-1"></i> View All Bug Reports
+        </a>
+    </div>
+</div>
+{% endblock %}
