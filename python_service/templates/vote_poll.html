@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="glass-card">
+    <h2 style="text-align: center;"><i class="fas fa-vote-yea"></i> Community Vote</h2>
+    <p style="text-align: center; color: #888; margin-bottom: 2rem;">Your opinion matters! Cast your vote below.</p>
+
+    <div
+        style="max-width: 500px; margin: 0 auto; background: #1a1a2e; border: 1px solid var(--border-color); border-radius: 8px; padding: 2rem;">
+        <h3 style="margin-bottom: 1.5rem; font-size: 1.2rem; color: #fff;">{{ poll.question }}</h3>
+
+        <form action="" method="post">
+            <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                {% for option in poll.get_options() %}
+                <label
+                    style="cursor: pointer; background: #252545; padding: 12px; border-radius: 6px; display: flex; align-items: center; transition: background 0.2s;">
+                    <input type="radio" name="option" value="{{ option }}" required
+                        style="margin-right: 12px; transform: scale(1.2);">
+                    <span style="color: #f0f0f0;">{{ option }}</span>
+                </label>
+                {% endfor %}
+            </div>
+
+            <button type="submit" class="btn" style="width: 100%; margin-top: 2rem;">Submit Vote</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

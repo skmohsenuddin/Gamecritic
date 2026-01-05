@@ -1,0 +1,384 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="glass-card premium-ui">
+    <div class="text-center mb-5">
+        <h2 class="display-6 fw-bold mb-2"><i class="fas fa-robot text-primary"></i> AI Game Suggestions</h2>
+        <p class="text-muted">Find your next obsession by category or how you're feeling.</p>
+    </div>
+
+    <!-- Classy Custom Toggle -->
+    <div class="mode-switcher-container mb-5">
+        <div class="mode-pill">
+            <input type="radio" name="mode_toggle" id="mode_cat" class="d-none" checked>
+            <label for="mode_cat" class="mode-label">By Category</label>
+
+            <input type="radio" name="mode_toggle" id="mode_mood" class="d-none">
+            <label for="mode_mood" class="mode-label">By Mood</label>
+
+            <div class="mode-slider"></div>
+        </div>
+    </div>
+
+    <form action="" method="post" id="suggestionForm" class="suggestion-form">
+        <input type="hidden" name="mode" id="modeInput" value="{{ details.mode if details else 'category' }}">
+
+        <!-- Category Mode -->
+        <div id="categoryWrapper" class="animate__animated animate__fadeIn">
+            <div class="d-flex justify-content-center gap-3">
+                <div class="select-wrapper">
+                    <select name="genre" class="form-select classy-select">
+                        <option value="All">All Categories</option>
+                        {% for genre in available_genres %}
+                        <option value="{{ genre }}" {% if details and details.genre==genre %}selected{% endif %}>{{
+                            genre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary px-4 shadow">
+                    Generate <i class="fas fa-sparkles ms-1"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mood Mode -->
+        <div id="moodWrapper" class="d-none animate__animated animate__fadeIn">
+            <div class="mood-selection-grid">
+                <div class="mood-option">
+                    <input type="radio" name="mood" id="mood_happy" value="Happy">
+                    <label class="mood-card" for="mood_happy">
+                        <div class="mood-icon"><i class="fas fa-smile"></i></div>
+                        <span class="mood-name">Happy</span>
+                    </label>
+                </div>
+
+                <div class="mood-option">
+                    <input type="radio" name="mood" id="mood_sad" value="Sad">
+                    <label class="mood-card" for="mood_sad">
+                        <div class="mood-icon"><i class="fas fa-sad-tear"></i></div>
+                        <span class="mood-name">Sad</span>
+                    </label>
+                </div>
+
+                <div class="mood-option">
+                    <input type="radio" name="mood" id="mood_angry" value="Angry">
+                    <label class="mood-card" for="mood_angry">
+                        <div class="mood-icon"><i class="fas fa-angry"></i></div>
+                        <span class="mood-name">Angry</span>
+                    </label>
+                </div>
+
+                <div class="mood-option">
+                    <input type="radio" name="mood" id="mood_chill" value="Chill">
+                    <label class="mood-card" for="mood_chill">
+                        <div class="mood-icon"><i class="fas fa-couch"></i></div>
+                        <span class="mood-name">Chill</span>
+                    </label>
+                </div>
+
+                <div class="mood-option">
+                    <input type="radio" name="mood" id="mood_adv" value="Adventurous">
+                    <label class="mood-card" for="mood_adv">
+                        <div class="mood-icon"><i class="fas fa-mountain"></i></div>
+                        <span class="mood-name">Adventure</span>
+                    </label>
+                </div>
+            </div>
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary btn-lg shadow-lg px-5">
+                    Suggest for my Mood
+                </button>
+            </div>
+        </div>
+    </form>
+
+    {% if details %}
+    <hr class="my-5 border-secondary opacity-25">
+    <div class="results-section animate__animated animate__slideInUp">
+        <div class="text-center mb-4">
+            <h4 class="text-primary fw-bold mb-3"><i class="fas fa-magic me-2"></i> Our AI Picked:</h4>
+            <p class="text-light-emphasis small px-4">{{ details.reason }}</p>
+        </div>
+
+        <div class=" suggestion-list">
+            {% for game in details.games %}
+            <a href="/game/{{ game.id }}" class="suggestion-link">
+                <div class="suggestion-card">
+                    <div class="suggestion-info">
+                        <span class="suggestion-title">{{ game.title }}</span>
+                    </div>
+                    <i class="fas fa-chevron-right text-primary opacity-50"></i>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+
+        {% if details.games and details.games[0].id != 0 %}
+        <div class="text-center mt-4">
+            <form action="{{ url_for('submit_suggestion') }}" method="post">
+                <input type="hidden" name="games_json" value='{{ details.games | tojson }}'>
+                <input type="hidden" name="reason" value="{{ details.reason }}">
+                <button type="submit" class="btn btn-sm btn-outline-success">
+                    <i class="fas fa-save me-1"></i> Save Recommendations
+                </button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .premium-ui {
+        max-width: 800px;
+        margin: 2rem auto;
+        background: rgba(30, 30, 45, 0.95) !important;
+        border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4) !important;
+    }
+
+    /* Aggressive Hider for ANY radio dots */
+    input[type="radio"] {
+        display: none !important;
+        visibility: hidden !important;
+        width: 0 !important;
+        height: 0 !important;
+        position: absolute !important;
+        opacity: 0 !important;
+    }
+
+    /* Pill Switcher Styles */
+    .mode-switcher-container {
+        display: flex;
+        justify-content: center;
+    }
+
+    .mode-pill {
+        display: flex;
+        position: relative;
+        background: rgba(0, 0, 0, 0.4);
+        padding: 4px;
+        border-radius: 50px;
+        width: 320px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .mode-label {
+        flex: 1;
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        padding: 12px 0;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: #aaa;
+        transition: all 0.4s ease;
+        margin-bottom: 0;
+    }
+
+    input[id="mode_cat"]:checked~label[for="mode_cat"],
+    input[id="mode_mood"]:checked~label[for="mode_mood"] {
+        color: #fff;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    }
+
+    .mode-slider {
+        position: absolute;
+        top: 4px;
+        left: 4px;
+        width: 156px;
+        height: calc(100% - 8px);
+        background: var(--primary-color);
+        border-radius: 50px;
+        z-index: 1;
+        transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    input[id="mode_mood"]:checked~.mode-slider {
+        transform: translateX(156px);
+    }
+
+    /* Classy Select Fixes */
+    .classy-select {
+        background-color: #1a1a2e;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 0.7rem 2.5rem 0.7rem 1rem;
+        border-radius: 10px;
+        min-width: 280px;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+    }
+
+    .classy-select option {
+        background-color: #1a1a2e;
+        color: white;
+        padding: 10px;
+    }
+
+    /* Mood Grid Refined */
+    .mood-selection-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 20px;
+    }
+
+    .mood-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 25px 15px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        margin-bottom: 0;
+    }
+
+    .mood-icon {
+        font-size: 2.2rem;
+        color: #555;
+        margin-bottom: 12px;
+        transition: all 0.3s;
+    }
+
+    .mood-name {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #777;
+        transition: color 0.3s;
+    }
+
+    /* Colored Active & Hover Effects */
+    .mood-option:nth-child(1) .mood-card:hover .mood-icon,
+    .mood-option:nth-child(1) input:checked+.mood-card .mood-icon {
+        color: #ffca28;
+        filter: drop-shadow(0 0 8px #ffca28);
+    }
+
+    .mood-option:nth-child(2) .mood-card:hover .mood-icon,
+    .mood-option:nth-child(2) input:checked+.mood-card .mood-icon {
+        color: #42a5f5;
+        filter: drop-shadow(0 0 8px #42a5f5);
+    }
+
+    .mood-option:nth-child(3) .mood-card:hover .mood-icon,
+    .mood-option:nth-child(3) input:checked+.mood-card .mood-icon {
+        color: #ef5350;
+        filter: drop-shadow(0 0 8px #ef5350);
+    }
+
+    .mood-option:nth-child(4) .mood-card:hover .mood-icon,
+    .mood-option:nth-child(4) input:checked+.mood-card .mood-icon {
+        color: #66bb6a;
+        filter: drop-shadow(0 0 8px #66bb6a);
+    }
+
+    .mood-option:nth-child(5) .mood-card:hover .mood-icon,
+    .mood-option:nth-child(5) input:checked+.mood-card .mood-icon {
+        color: #ffa726;
+        filter: drop-shadow(0 0 8px #ffa726);
+    }
+
+    .mood-card:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.3);
+        transform: scale(1.05);
+    }
+
+    .mood-option input:checked+.mood-card {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: #fff;
+        transform: translateY(-8px) scale(1.05);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .mood-option input:checked+.mood-card .mood-name {
+        color: #fff;
+    }
+
+    /* Results Classy List */
+    .suggestion-list {
+        max-width: 550px;
+        margin: 0 auto;
+    }
+
+    .suggestion-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 18px 24px;
+        border-radius: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+
+    .suggestion-card:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: var(--primary-color);
+        transform: translateX(10px) scale(1.02);
+    }
+
+    /* Neon Overrides */
+    body.neon-mode .mode-slider {
+        background: #00f3ff;
+        box-shadow: 0 0 20px #00f3ff;
+    }
+
+    body.neon-mode .mood-option input:checked+.mood-card {
+        border-color: #00f3ff;
+        box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
+    }
+
+    body.neon-mode .mood-option input:checked+.mood-card .mood-icon {
+        color: #00f3ff !important;
+        text-shadow: 0 0 15px #00f3ff;
+    }
+
+    @media (max-width: 768px) {
+        .mood-selection-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const modeInput = document.getElementById('modeInput');
+        const catWrapper = document.getElementById('categoryWrapper');
+        const moodWrapper = document.getElementById('moodWrapper');
+        const modeCat = document.getElementById('mode_cat');
+        const modeMood = document.getElementById('mode_mood');
+
+        function updateMode(mode) {
+            modeInput.value = mode;
+            if (mode === 'mood') {
+                catWrapper.style.display = 'none';
+                moodWrapper.style.display = 'block';
+                modeMood.checked = true;
+            } else {
+                catWrapper.style.display = 'block';
+                moodWrapper.style.display = 'none';
+                modeCat.checked = true;
+            }
+        }
+
+        modeCat.addEventListener('change', () => updateMode('category'));
+        modeMood.addEventListener('change', () => updateMode('mood'));
+
+        // Initialize
+        const initialMode = "{{ details.mode if details else 'category' }}";
+        updateMode(initialMode);
+    });
+</script>
+{% endblock %}
