@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="glass-card">
+    <h2 style="text-align: center;"><i class="fas fa-plus-circle"></i> Create a New Poll</h2>
+    <p style="text-align: center; color: #888; margin-bottom: 2rem;">Ask the community a question and get their
+        feedback.</p>
+
+    <form action="" method="post" style="max-width: 500px; margin: 0 auto;">
+        <div style="margin-bottom: 1.5rem;">
+            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Poll Question</label>
+            <input type="text" name="question" class="form-control"
+                placeholder="e.g., What is the best RPG of all time?" required>
+        </div>
+
+        <div style="margin-bottom: 2rem;">
+            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Options (comma separated)</label>
+            <input type="text" name="options" class="form-control" placeholder="e.g., Witcher 3, Skyrim, Elden Ring"
+                required>
+        </div>
+
+        <button type="submit" class="btn" style="width: 100%;">Create Poll</button>
+        <div style="text-align: center; margin-top: 1rem;">
+            <a href="{{ url_for('list_polls') }}" style="color: #888; text-decoration: none; font-size: 0.9rem;">
+                <i class="fas fa-list me-1"></i> View All Polls
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

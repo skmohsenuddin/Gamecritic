@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block head %}
+<style>
+    .poll-progress-bar {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        height: 10px;
+        overflow: hidden;
+    }
+
+    .poll-progress-fill {
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        height: 100%;
+        width: var(--progress-width, 0%);
+        transition: width 0.5s ease;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="glass-card">
+    <h2 style="text-align: center;"><i class="fas fa-chart-bar"></i> Poll Results</h2>
+    <p style="text-align: center; color: #888; margin-bottom: 2rem;">The community has spoken. Here are the latest
+        standings.</p>
+
+    <div
+        style="max-width: 600px; margin: 0 auto; background: #1a1a2e; border: 1px solid var(--border-color); border-radius: 8px; padding: 2rem;">
+        <h3 style="margin-bottom: 1.5rem; font-size: 1.2rem; color: var(--primary-color);">{{ poll.question }}</h3>
+
+        {% set results = poll.get_results() %}
+        {% set total_votes = results.values() | sum %}
+
+        <div class="results-container">
+            {% for option, count in results.items() %}
+            {% set percentage = (count / total_votes * 100) if total_votes > 0 else 0 %}
+            <div style="margin-bottom: 1.5rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.95rem;">
+                    <span style="color: #f0f0f0;">{{ option }}</span>
+                    <span style="color: #888;">{{ count }} votes ({{ "%.1f"|format(percentage) }}%)</span>
+                </div>
+                <div class="poll-progress-bar" style="background: #252545;">
+                    <div class="poll-progress-fill"
+                        style="--progress-width: {{ percentage }}%; background: var(--primary-color);"></div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div
+            style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: #666; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+            Total Community Votes: {{ total_votes }}
+        </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 2rem;">
+        <a href="/create_poll" class="btn">Create New Poll</a>
+    </div>
+</div>
+{% endblock %}

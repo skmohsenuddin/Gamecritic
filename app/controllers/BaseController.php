@@ -1,0 +1,82 @@
+<?php
+class BaseController {
+    protected function ensureSessionStarted() {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            @session_start();
+        }
+    }
+
+    protected function baseUrl() {
+        $https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443);
+        $scheme = $https ? 'https' : 'http';
+        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+        $basePath = '/Gamecritic/public';
+        return $scheme . '://' . $host . $basePath;
+    }
+
+    protected function render($view, $data = []) {
+        extract($data);
+        ob_start();
+        $baseUrl = $this->baseUrl();
+        include __DIR__ . "/../views/{$view}.php";
+        $content = ob_get_clean();
+        ob_start();
+        include __DIR__ . "/../views/layouts/main.php";
+        $finalOutput = ob_get_clean();
+        return $finalOutput;
+    }
+
+    protected function redirect($url) {
+        if (strpos($url, 'http') !== 0) {
+            $url = $this->baseUrl() . $url;
+        }
+        header("Location: {$url}");
+        exit();
+    }
+
+    protected function jsonResponse($data) {
+        header('Content-Type: application/json');
+        echo json_encode($data);
+        exit();
+    }
+
+    protected function isLoggedIn() {
+        $this->ensureSessionStarted();
+        return isset($_SESSION['user_id']);
+    }
+
+    protected function isAdmin() {
+        $this->ensureSessionStarted();
+        return isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 1;
+    }
+
+    protected function requireLogin() {
+        $this->ensureSessionStarted();
+        if (!$this->isLoggedIn()) {
+            $this->redirect('/login');
+        }
+    }
+
+    protected function requireAdmin() {
+        $this->ensureSessionStarted();
+        if (!$this->isAdmin()) {
+            $this->redirect('/');
+        }
+    }
+
+    protected function getCurrentUser() {
+        $this->ensureSessionStarted();
+        if ($this->isLoggedIn()) {
+            return [
+                'id' => $_SESSION['user_id'],
+                'name' => $_SESSION['user_name'] ?? '',
+                'username' => $_SESSION['user_name'] ?? '',
+                'email' => $_SESSION['user_email'],
+                'is_admin' => $_SESSION['is_admin'] ?? 0
+            ];
+        }
+        return null;
+    }
+}
+?>
+

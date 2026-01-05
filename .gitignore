@@ -1,0 +1,26 @@
+# Python
+venv/
+MLmodel/venv/
+__pycache__/
+*.py[cod]
+instance/
+.python_service/instance/
+.pytest_cache/
+.vscode/
+
+# Database
+*.db
+*.sqlite
+*.sql.gz
+app.db
+python_service/instance/
+
+# Uploads
+public/uploads/
+
+# Environment
+.env
+
+# PHP / OS
+.DS_Store
+Thumbs.db
